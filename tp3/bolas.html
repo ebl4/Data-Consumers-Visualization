@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="http://d3js.org/d3.v3.min.js" language="JavaScript"></script>
+    <script src="liquidFillGauge.js" language="JavaScript"></script>
+    <style>
+        .liquidFillGaugeText { font-family: Helvetica; font-weight: bold; }
+    </style>
+</head>
+<body>
+<svg id="fillgauge1" width="97%" height="250" onclick="gauge1.update(NewValue());"></svg>
+<svg id="fillgauge2" width="19%" height="200" onclick="gauge2.update(NewValue());"></svg>
+<svg id="fillgauge3" width="19%" height="200" onclick="gauge3.update(NewValue());"></svg>
+<svg id="fillgauge4" width="19%" height="200" onclick="gauge4.update(NewValue());"></svg>
+<svg id="fillgauge5" width="19%" height="200" onclick="gauge5.update(NewValue());"></svg>
+<svg id="fillgauge6" width="19%" height="200" onclick="gauge6.update(NewValue());"></svg>
+<script language="JavaScript">
+ 
+var dadosGlobais;
+var dadosByNota;
+var total;
+var nota1,nota1Pocentagem;
+var nota2,nota2Porcentagem;
+var nota3,nota3Porcentagem;
+var nota4,nota4Porcentagem;
+var nota5,nota5Porcentagem;
+var media;
+var mediaGeral;
+
+d3.csv("data/data.csv", function(data) {
+
+    dadosGlobais = data;
+
+    dadosByNota = d3.nest()
+      .key(function(d) { return d.NotaConsumidor; })
+      .rollup(function(v) { return v.length })
+      .entries(dadosGlobais);
+      
+    console.log(dadosByNota);
+
+    nota1 = dadosByNota[0].values;
+    nota2 = dadosByNota[1].values;
+    nota3 = dadosByNota[2].values 
+    nota4 = dadosByNota[3].values 
+    nota5 = dadosByNota[4].values;
+
+    total = nota1 + nota2 + nota3 + nota4 + nota5;
+
+    nota1Pocentagem = (nota1*100)/total;
+    nota2Pocentagem = (nota2*100)/total;
+    nota3Pocentagem = (nota3*100)/total;
+    nota4Pocentagem = (nota4*100)/total;
+    nota5Pocentagem = (nota5*100)/total;
+
+    mediaGeral = (nota1 * 1 + nota2 * 2 + nota3 * 3 + nota4 * 4 + nota5 * 5) / total;
+
+
+    var config1 = liquidFillGaugeDefaultSettings();
+    
+    config1.circleColor = "#FF0000";
+    config1.textColor = "#000000";
+    config1.waveTextColor = "#000000";
+    config1.waveColor = "#0099FF";
+    config1.circleThickness = 0.2;
+    config1.textVertPosition = 0.2;
+    config1.waveAnimateTime = 1000;
+    
+    //por nota
+    var gauge2= loadLiquidFillGauge("fillgauge2", nota1Pocentagem, config1);
+    var config2 = liquidFillGaugeDefaultSettings();
+    
+    config2.circleColor = "#FF6600";
+    config2.textColor = "#000000";
+    config2.waveTextColor = "#000000";
+    config2.waveColor = "#0099FF";
+    config2.circleThickness = 0.2;
+    config2.textVertPosition = 0.2;
+    config2.waveAnimateTime = 1000;
+    
+
+    var gauge3= loadLiquidFillGauge("fillgauge3", nota2Pocentagem, config2);
+    var config3 = liquidFillGaugeDefaultSettings();
+    
+    config3.circleColor = "#FFCC00";
+    config3.textColor = "#000000";
+    config3.waveTextColor = "#000000";
+    config3.waveColor = "#0099FF";
+    config3.circleThickness = 0.2;
+    config3.textVertPosition = 0.2;
+    config3.waveAnimateTime = 1000;
+
+    var gauge4= loadLiquidFillGauge("fillgauge4", nota3Pocentagem, config3);
+    var config4 = liquidFillGaugeDefaultSettings();
+    
+    config4.circleColor = "#248f24";
+    config4.textColor = "#000000";
+    config4.waveTextColor = "#000000";
+    config4.waveColor = "#0099FF";
+    config4.circleThickness = 0.2;
+    config4.textVertPosition = 0.2;
+    config4.waveAnimateTime = 1000;
+
+    var gauge5= loadLiquidFillGauge("fillgauge5", nota4Pocentagem, config4);
+    var config5 = liquidFillGaugeDefaultSettings();
+    
+    config5.circleColor = "#00cc44";
+    config5.textColor = "#000000";
+    config5.waveTextColor = "#000000";
+    config5.waveColor = "#0099FF";
+    config5.circleThickness = 0.2;
+    config5.textVertPosition = 0.2;
+    config5.waveAnimateTime = 1000;
+
+    var gauge6= loadLiquidFillGauge("fillgauge6", nota5Pocentagem, config5);
+    
+    
+    
+    
+    if (mediaGeral <=1)
+    {
+        
+    }
+    else if (mediaGeral > 1 && mediaGeral <=2)
+    {
+
+    }
+    else if (mediaGeral > 2 && mediaGeral <=3)
+    {
+
+    }
+    else if ((mediaGeral > 3) && (mediaGeral <=4))
+    {
+        var gauge1 = loadLiquidFillGauge("fillgauge1", 0, config5);
+    }
+    else
+    {
+
+    }
+
+
+    });
+
+    function NewValue(){
+        if(Math.random() > .5){
+            return Math.round(Math.random()*100);
+        } else {
+            return (Math.random()*100).toFixed(1);
+        }
+    }
+
+</script>
+</body>
+</html>

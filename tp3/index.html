@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<head>
+   <meta charset="utf-8">
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+   <title>Consumidor.gov.br - Visualização de Dados.</title>
+
+   <!-- Bootstrap -->
+   <link href="vendors/css/bootstrap.min.css" rel="stylesheet">
+   <!-- CSS -->
+   <link href="assets/css/style.css" rel="stylesheet">  
+   <!-- lodash-->
+   <script src="vendors/js/lodash.min.js"></script>
+   <!-- D3 -->
+   <script src="https://d3js.org/d3.v3.min.js"></script>
+   <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+   <!-- jQuery -->
+   <script src="vendors/js/jquery-3.2.1.min.js"></script>
+   <!-- Bootstrap -->
+   <script src="vendors/js/bootstrap.min.js"></script>
+   <!-- Highcharts Map -->
+   <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+	<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/mapdata/countries/br/br-all.js"></script>
+</head>
+
+<style>
+
+.container-header {
+  background: blue;
+}
+
+.bg-1 {
+   background-color: #273593; /* #1abc9c; /* Green */
+   color: #ffffff;
+}
+.bg-2 {
+   background-color: #D7DCFF; /* #474e5d; /* Dark Blue */
+   color: #000000;
+}
+.bg-3 {
+   background-color: #ffffff; /* White */
+   color: #555555;
+}
+
+.container-fluid {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#img-logo {
+    position: absolute;
+    left: 12px;
+    top: -20px;
+    width: 566px;
+}
+
+#svg-regiao {
+    height: 300px; 
+    max-height: 300px; 
+    width: 450px;
+    min-width: 310px; 
+    max-width: 450px; 
+    margin: 0 auto; 
+}
+.loading {
+    margin-top: 10em;
+    text-align: center;
+    color: gray;
+}
+    
+</style>
+
+<body>
+
+   <!-- container header -->
+   <div class="container-fluid bg-1 text-center">
+      <div class="row"> 
+         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> 
+            <div class="pull-right"> 
+               <h4>TP 03: Trabalho Prático - Visualização de Dados</h4>
+               <h4>Levy de Souza Silva, Edson Barboza de Lima, Tiago França Melo de Lima</h4>
+            </div> 
+            <div> 
+               <img id="img-logo" src="img/logo-nova-900.png">
+            </div> 
+         </div> 
+      </div> 
+   </div>
+   
+   <!-- container controle/filtros -->
+   <div class="container-fluid bg-2 text-center">
+      <!-- <p>Lorem ipsum..</p> -->
+      <form action="">
+         Quantidade: 
+         <select id="filtroQtd" name="group-top" class="filtro-dropdown">
+            <option value="1000">TODOS</option>
+            <option value="5">TOP 5</option>
+            <option value="10">TOP 10</option>
+            <option value="15">TOP 15</option>
+            <option value="20">TOP 20</option>
+            <option value="25">TOP 25</option>
+         </select>
+         Ordenação:
+         <select id="filtroOrd" name="group-sort" class="filtro-dropdown">
+            <option value="ordRecl">Reclamações</option>
+            <option value="ordNome">Alfabética</option>
+         </select>
+         
+         <a id="botaoFiltro" onclick="acaoFiltrarDados()" href="#" class="btn btn-default btn-sm">Filtrar</a>
+      </form> 
+      
+   </div>
+
+   <!-- container gráficos -->
+   <div class="container-fluid bg-3 text-center">
+      <!-- <h3>Where To Find Me?</h3> -->
+      <div class="row">
+         <div class="col-sm-4">
+            <p>Reclamações: Cadastradas x Resolvidas</p>
+            <div id="svg-strecsol"></div>
+         </div>
+         <div class="col-sm-4">
+            <p>Tempo: Resposta x Finalização (dias)</p>
+            <img src="img.png" alt="Image">
+            <!-- <div id="svg-temporesposta"></div> -->
+         </div>
+         <div class="col-sm-4">
+            <div class="filtro-dropdown" align="center">
+               Região: <select id="comboboxEstados" onchange="acaoFiltrarDados()">
+                  <option value="BR">Todos os Estados</option>
+                  <option value="AC">Acre</option>
+                  <option value="AL">Alagoas</option>
+                  <option value="AP">Amapá</option>
+                  <option value="AM">Amazonas</option>
+                  <option value="BA">Bahia</option>
+                  <option value="CE">Ceará</option>
+                  <option value="DF">Distrito Federal</option>
+                  <option value="ES">Espirito Santo</option>
+                  <option value="GO">Goiás</option>
+                  <option value="MA">Maranhão</option>
+                  <option value="MS">Mato Grosso do Sul</option>
+                  <option value="MT">Mato Grosso</option>
+                  <option value="MG">Minas Gerais</option>
+                  <option value="PA">Pará</option>
+                  <option value="PB">Paraíba</option>
+                  <option value="PR">Paraná</option>
+                  <option value="PE">Pernambuco</option>
+                  <option value="PI">Piauí</option>
+                  <option value="RJ">Rio de Janeiro</option>
+                  <option value="RN">Rio Grande do Norte</option>
+                  <option value="RS">Rio Grande do Sul</option>
+                  <option value="RO">Rondônia</option>
+                  <option value="RR">Roraima</option>
+                  <option value="SC">Santa Catarina</option>
+                  <option value="SP">São Paulo</option>
+                  <option value="SE">Sergipe</option>
+                  <option value="TO">Tocantins</option>
+               </select>
+               <div id="svg-regiao"></div>
+            </div>
+         </div>
+      </div>
+      
+      <!-- <h3>Where To Find Me?</h3> -->
+      
+      <div class="row">
+         <div class="col-sm-4">
+            <!-- <div class="filtro-dropdown" align="center">
+               <select id="comboboxArea" >
+                  <option value="TODOS">Todas</option>
+                  <option value="Tele">Tele</option>
+                  <option value="Bancos">Bancos</option>
+               </select>
+            </div>-->
+            <p>Reclamações por Segmento de Mercado</p>
+            <div id="svg-segmento"></div>
+         </div>
+         <div class="col-sm-4">
+            <p>Reclamações por Área de Mercado</p>
+            <div id="svg-area"></div>
+         </div>
+         <div class="col-sm-4"> 
+            <p>Reclamações por Empresa (limitado à 25)</p>
+            <div id="svg-empresa"></div>
+         </div>
+      </div>
+      
+      <h3>Nível de satisfação</h3>
+      
+      <div class="row">
+        <!--<svg id="fillgauge1" width="97%" height="250" ></svg> -->
+        <svg id="fillgauge2" width="19%" height="200" ></svg>
+        <svg id="fillgauge3" width="19%" height="200" ></svg>
+        <svg id="fillgauge4" width="19%" height="200" ></svg>
+        <svg id="fillgauge5" width="19%" height="200" ></svg>
+        <svg id="fillgauge6" width="19%" height="200" ></svg>
+      </div>
+   </div> 
+   
+</body>
+
+<!-- JS functions-->
+<script src="assets/js/main.js"></script>
+<!-- <script src="assets/js/liquidFillGauge.js"></script> -->
+<!-- <script src="assets/js/grafFace.js"></script> -->
+
+<script src="assets/js/grafSTRecSol.js"></script>
+<script src="assets/js/grafRecSegmento.js"></script>
+<script src="assets/js/grafRecEmpresa.js"></script>
+<script src="assets/js/grafRecArea.js"></script>
+<script src="assets/js/grafMapa.js"></script>
+<!-- <script src="assets/js/grafLinha.js"></script> -->
+<!-- <script src="assets/js/graficoTempoRespRec.js"></script> -->
+
+</html>
